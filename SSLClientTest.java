@@ -76,11 +76,22 @@ public class SSLClientTest {
             SSLSocketFactory socketFactory = sslCtx.getSocketFactory();
             // Open connection with server
             SSLSocket socket = (SSLSocket) socketFactory.createSocket(this.url.getHost(), this.url.getPort());
-            setSocket(socket);
             SSLParameters params = socket.getSSLParameters();
             System.out.println("Protocols: " + List(params.getProtocols()));
             System.out.println("CipherSuites: " + List(params.getCipherSuites()));
             System.out.println("NamedGroups: " + List(params.getNamedGroups()));
+            String[] groups = params.getNamedGroups();
+            String[] ngroups = new String[groups.length + 4];
+            System.arraycopy(groups, 0, ngroups, 0, groups.length);
+            ngroups[groups.length] = "SecP256r1MLKEM768";
+            ngroups[groups.length+1] = "X25519MLKEM768";
+            ngroups[groups.length+2] = "X448MLKEM1024";
+            ngroups[groups.length+3] = "SecP384r1MLKEM1024";
+            System.out.println("NamedGroups: " + List(ngroups));
+            params.setNamedGroups(ngroups);
+            socket.setSSLParameters(params);
+            System.out.println("NamedGroups: " + List(socket.getSSLParameters().getNamedGroups()));
+            setSocket(socket);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
