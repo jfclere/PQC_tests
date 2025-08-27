@@ -1,8 +1,9 @@
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.KeyManagerFactory;
 import java.security.KeyStore;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.URL;
@@ -52,6 +53,15 @@ public class SSLClientTest {
 		os.write(httpQuery.getBytes());
 		os.flush();
 	}
+  private String List(String[] strings) {
+    String s = "";
+    for (int i=0; i< strings.length; i++) {
+      if (i !=0)
+        s = s + " ";
+      s = s + strings[i];
+    }
+    return s;
+  }
 
   public void connect() throws Exception {
         try {
@@ -67,6 +77,10 @@ public class SSLClientTest {
             // Open connection with server
             SSLSocket socket = (SSLSocket) socketFactory.createSocket(this.url.getHost(), this.url.getPort());
             setSocket(socket);
+            SSLParameters params = socket.getSSLParameters();
+            System.out.println("Protocols: " + List(params.getProtocols()));
+            System.out.println("CipherSuites: " + List(params.getCipherSuites()));
+            System.out.println("NamedGroups: " + List(params.getNamedGroups()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
